@@ -1,0 +1,67 @@
+import { Store } from 'vuex'
+import { RootState } from '@/store'
+import * as types from '@/store/<%= name.toLowerCase() %>/types'
+import { IOptionsProps } from '@/entities/Options'
+import <%= name %>Entity, { Empty<%= name %>EntityFactory, I<%= name %>Props } from '@/entities/<%= name %>'
+import { IQueryProps } from '@/entities/Query'
+
+export default class <%= name %>Repository {
+  private _store: Store<RootState>
+
+  constructor(store: Store<RootState>) {
+    this._store = store
+  }
+
+  set loading(value: boolean) {
+    this._store.commit(new types.Loading(value))
+  }
+
+  get loading(): boolean {
+    return this._store.state.<%= name.toLowerCase() %>.loading
+  }
+
+  set dialog(value: boolean | null) {
+    this._store.commit(new types.Dialog(value))
+  }
+
+  get dialog(): boolean | null {
+    return this._store.state.<%= name.toLowerCase() %>.dialog
+  }
+
+  set query(value: IQueryProps) {
+    this._store.commit(new types.Query(value))
+  }
+
+  get query(): IQueryProps {
+    return this._store.state.<%= name.toLowerCase() %>.query
+  }
+
+  set options(value: IOptionsProps) {
+    this._store.commit(new types.Options(value))
+  }
+
+  get options(): IOptionsProps {
+    return this._store.state.<%= name.toLowerCase() %>.options
+  }
+
+  store(value: I<%= name %>Props[] | I<%= name %>Props, reset: boolean = true) {
+    if (reset) {
+      this._store.commit(new types.Store(null))
+    }
+    value = !Array.isArray(value) ? [value] : value
+    this._store.commit(new types.Store(value))
+  }
+
+  all(): <%= name %>Entity[] {
+    const props = this._store.state.<%= name.toLowerCase() %>.byIds
+    return props ? Object.values(props).map((prop) => Empty<%= name %>EntityFactory(prop)) : []
+  }
+
+  get(id: string): <%= name %>Entity {
+    return Empty<%= name %>EntityFactory(this._store.state.<%= name.toLowerCase() %>.byIds[id])
+  }
+
+  clear() {
+    this._store.commit(new types.Clear())
+  }
+}

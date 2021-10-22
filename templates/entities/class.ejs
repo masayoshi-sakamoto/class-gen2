@@ -1,0 +1,38 @@
+export interface I<%= name %>Props {
+  id?: string
+  <%= title %>: string | null
+}
+
+export default class <%= name %>Entity {
+  private _props: I<%= name %>Props
+
+  constructor(props: I<%= name %>Props) {
+    this._props = props
+  }
+
+  get props(): I<%= name %>Props {
+    return JSON.parse(JSON.stringify(this._props))
+  }
+
+  get id(): string | undefined {
+    return this._props.id
+  }
+
+  get <%= title %>(): string | null {
+    return this._props.<%= title %>
+  }
+}
+
+export const headers = [
+  { text: 'ID', value: 'id' },
+  { text: 'タイトル', value: '<%= title %>' }
+]
+
+export const Empty<%= name %>PropsFactory = (props?: Partial<I<%= name %>Props>): I<%= name %>Props => ({
+  <%= title %>: null,
+  ...props
+})
+
+export const Empty<%= name %>EntityFactory = (props?: Partial<I<%= name %>Props>): <%= name %>Entity => {
+  return new <%= name %>Entity(Empty<%= name %>PropsFactory(props))
+}

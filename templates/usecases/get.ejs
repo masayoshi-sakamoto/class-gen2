@@ -1,0 +1,20 @@
+import { IApp } from '@/types/nuxt'
+import { errors } from '@/utils/error'
+
+export default class Fetch<%= name %>UseCase implements BaseUseCase {
+  app: IApp
+  constructor(app: IApp) {
+    this.app = app
+  }
+
+  async execute(id: string) {
+    const { <%= name.toLowerCase() %>, <%= appName.toLowerCase() %>Gateway, logService } = this.app
+    try {
+      const props = await <%= appName.toLowerCase() %>Gateway.<%= name %>.Get<%= name %>(id)
+      <%= name.toLowerCase() %>.save(props)
+      return true
+    } catch (error) {
+      return await errors(error, this.app, logService)
+    }
+  }
+}

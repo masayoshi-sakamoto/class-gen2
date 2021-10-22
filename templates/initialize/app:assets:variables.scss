@@ -1,0 +1,19 @@
+// Ref: https://github.com/nuxt-community/vuetify-module#customvariables
+//
+// The variables you want to modify
+// $font-size-root: 20px;
+@import '~vuetify/src/styles/settings/colors';
+$material-light: (
+  table: (
+    hover: map-get($light-blue, 'lighten-5')
+  )
+);
+
+$list-item-action-icon-margin: 16px;
+
+$shadow-key-umbra-opacity: rgba(85, 85, 85, 0.08);
+$shadow-key-penumbra-opacity: rgba(85, 85, 85, 0.06);
+$shadow-key-ambient-opacity: rgba(85, 85, 85, 0.03);
+
+$card-elevation: 4;
+$border-radius-root: 6px;

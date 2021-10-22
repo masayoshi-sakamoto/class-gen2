@@ -1,0 +1,11 @@
+required:
+  - id
+  - <%= title %>
+properties:
+  id:
+    type: string
+    example: "unique_<%= name.toLowerCase() %>_id"
+  <%= title %>:
+    type: string
+    example: "タイトル"
+    nullable: true

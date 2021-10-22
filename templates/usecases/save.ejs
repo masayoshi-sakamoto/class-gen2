@@ -1,0 +1,16 @@
+import { IApp } from '@/types/nuxt'
+import <%= name %>Entity from '@/entities/<%= name %>'
+import RefreshUseCase from '@/usecases/RefreshUseCase'
+
+export default class Save<%= name %>UseCase extends RefreshUseCase implements BaseUseCase {
+  app: IApp
+  constructor(app: IApp) {
+    super()
+    this.app = app
+  }
+
+  async execute(entity: <%= name %>Entity) {
+    await super.refresh(this.app)
+    await this.app.bambooGateway.<%= name %>.Save<%= name %>(entity)
+  }
+}
