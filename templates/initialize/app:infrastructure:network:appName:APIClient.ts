@@ -67,7 +67,7 @@ export class APIClient {
   // Convert axios error into APIError
   private normalizeError(error: HttpError): APIError {
     return {
-      status: error.response && error.response.status,
+      statusCode: error.response && error.response.status,
       message: error.message,
       raw: error
     }

@@ -93,7 +93,7 @@ export const menu2: MenuEntity[] = [
   })
 ]
 
-export const shops: MenuEntity[] = [
+export const menus: MenuEntity[] = [
   EmptyMenuEntityFactory({
     id: '1',
     title: 'ダッシュボード',

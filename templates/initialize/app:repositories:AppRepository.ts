@@ -74,14 +74,6 @@ export default class AppRepository {
     return this.store.state.app.errors
   }
 
-  setDialog(type: string, value: boolean | null) {
-    this.store.commit(new types.Dialog({ type, value }))
-  }
-
-  getDialog(type: string): boolean | null {
-    return this.store.state.app.dialog[type] ? this.store.state.app.dialog[type] : null
-  }
-
   set drawer(value: boolean | null) {
     this.store.commit(new types.Drawer(value))
   }
@@ -96,13 +88,5 @@ export default class AppRepository {
 
   get menus(): MenuEntity[] | null {
     return this.store.state.app.menus
-  }
-
-  set active(value: any) {
-    this.store.commit(new types.Active(value))
-  }
-
-  get active(): any {
-    return this.store.state.app.active
   }
 }
