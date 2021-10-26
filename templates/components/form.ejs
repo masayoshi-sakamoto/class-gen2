@@ -52,7 +52,7 @@
       value: {
         handler() {
           this.cancel()
-          this.props = this.value ? this.value.props : Empty<%= name %>PropsFactory()
+          this.props = this.value ? this.value.clone.props : Empty<%= name %>PropsFactory()
         },
         immediate: true
       }
