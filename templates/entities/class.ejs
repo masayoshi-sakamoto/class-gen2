@@ -11,7 +11,11 @@ export default class <%= name %>Entity {
   }
 
   get props(): I<%= name %>Props {
-    return JSON.parse(JSON.stringify(this._props))
+    return this._props
+  }
+
+  get clone(): <%= name %>Entity {
+    return new <%= name %>Entity(JSON.parse(JSON.stringify(this._props)))
   }
 
   get id(): string | undefined {

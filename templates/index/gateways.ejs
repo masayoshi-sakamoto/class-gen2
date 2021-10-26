@@ -28,8 +28,3 @@ export default class <%= appName %>Gateway {
     <%_ }}); _%>
   }
 }
-
-export const <%= appName %>GatewayFactory = (): <%= appName %>Gateway => {
-  const apiClient = new APIClient()
-  return new <%= appName %>Gateway(apiClient)
-}
