@@ -313,9 +313,6 @@ function components(className: string) {
   generator({ type, dist, name, outfile: 'index', filename: 'index', options: { name, names, appName } })
   generator({ ext: '.vue', type, dist, name, filename: 'form', options: { name, names, appName, japanese, title } })
 
-  dist = makeDir(makeDir(makeDir(makeDir(commander.dist, type), 'organisms'), 'List'), name)
-  generator({ type, dist, name, outfile: 'index', filename: 'index', options: { name, names, appName } })
-
   dist = makeDir(makeDir(commander.dist, 'pages'), name.toLowerCase())
   generator({ ext: '.vue', type, dist, name, outfile: 'index', filename: 'page', options: { name, names, appName, japanese } })
 }
@@ -399,7 +396,6 @@ function remove(className: string) {
   initSwagger()
   try {
     rimraf.sync(path.resolve(commander.dist, 'components', 'organisms', 'Form', Name))
-    rimraf.sync(path.resolve(commander.dist, 'components', 'organisms', 'List', Name))
     rimraf.sync(path.resolve(commander.dist, 'components', 'templates', Name))
     rimraf.sync(path.resolve(commander.dist, 'entities', name + '.ts'))
     rimraf.sync(path.resolve(commander.dist, 'gateways', appName, name + '.ts'))

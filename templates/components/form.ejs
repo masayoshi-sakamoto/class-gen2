@@ -2,8 +2,8 @@
   <validation-observer ref="observer" v-slot="{ invalid, passes }">
     <v-form ref="form" @submit.prevent="passes(submit)">
       <div v-if="props.id" class="text-right mb-4">
-        <v-btn min-width="240" color="error" depressed @click="dialog = true">
-          <strong>削除する</strong>
+        <v-btn min-width="240" class="font-weight-bold" color="error" depressed @click="dialog = true">
+          削除する
         </v-btn>
       </div>
       <v-alert v-if="App.state.errors.message" dense outlined type="error" class="mt-6 mb-10">
@@ -12,9 +12,9 @@
       <validation-provider v-slot="{ errors }" rules="required" name="タイトル">
         <v-text-field v-model="props.<%= title %>" label="タイトル" :error-messages="App.state.errors.<%= title %> ? App.state.errors.<%= title %> : errors[0]"></v-text-field>
       </validation-provider>
-      <div class="text-center">
-        <v-btn min-width="240" type="submit" class="mt-4" color="primary" depressed :disabled="invalid">
-          <strong>保存</strong>
+      <div class="text-center mt-4">
+        <v-btn min-width="240" type="submit" class="font-weight-bold" color="primary" depressed :disabled="invalid">
+          保存
         </v-btn>
       </div>
     </v-form>
