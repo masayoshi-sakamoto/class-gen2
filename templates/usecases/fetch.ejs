@@ -10,7 +10,7 @@ export default class Fetch<%= name %>sUseCase extends RefreshUseCase implements 
 
   async execute() {
     await super.refresh(this.app)
-    const response = await this.app.bambooGateway.<%= name %>.Fetch<%= name %>s(this.app.<%= name.toLowerCase() %>.options)
+    const response = await this.app.<%= appName.toLowerCase() %>Gateway.<%= name %>.Fetch<%= name %>s(this.app.<%= name.toLowerCase() %>.options)
     this.app.<%= name.toLowerCase() %>.store(response.items)
     this.app.<%= name.toLowerCase() %>.query = response.query
     this.app.<%= name.toLowerCase() %>.options = {

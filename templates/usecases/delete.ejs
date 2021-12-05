@@ -11,6 +11,6 @@ export default class Delete<%= name %>UseCase extends RefreshUseCase implements 
 
   async execute(entity: <%= name %>Entity) {
     await super.refresh(this.app)
-    await this.app.bambooGateway.<%= name %>.Delete<%= name %>(entity)
+    await this.app.<%= appName.toLowerCase() %>Gateway.<%= name %>.Delete<%= name %>(entity)
   }
 }

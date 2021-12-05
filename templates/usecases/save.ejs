@@ -11,6 +11,6 @@ export default class Save<%= name %>UseCase extends RefreshUseCase implements Ba
 
   async execute(entity: <%= name %>Entity) {
     await super.refresh(this.app)
-    await this.app.bambooGateway.<%= name %>.Save<%= name %>(entity)
+    await this.app.<%= appName.toLowerCase() %>Gateway.<%= name %>.Save<%= name %>(entity)
   }
 }
