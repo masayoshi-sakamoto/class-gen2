@@ -12,10 +12,10 @@ export default class <%= name %> extends <%= appName %>GatewayBase {
     return <%= name.toLowerCase() %> ? to<%= name %>Props(<%= name.toLowerCase() %>) : Empty<%= name %>PropsFactory()
   }
 
-  async Fetch<%= name %>s(options?: IOptionsProps) {
-    const response = await this.apiClient.request(new Fetch<%= name %>s(optionsToQuery(options)))
+  async Fetch<%= names %>s(options?: IOptionsProps) {
+    const response = await this.apiClient.request(new Fetch<%= names %>s(optionsToQuery(options)))
     return {
-      items: response.<%= name.toLowerCase() %>s.map((prop) => to<%= name %>Props(prop)),
+      items: response.<%= names.toLowerCase() %>s.map((prop) => to<%= name %>Props(prop)),
       query: toQueryProps(response.query),
       options: toOptionsProps(response.query)
     }
