@@ -21,7 +21,7 @@
   import Dialog from '@/components/molecules/Dialog'
   import Form<%= name %> from '@/components/organisms/Form/<%= name %>'
   import <%= name %>Entity, { headers } from '@/entities/<%= name %>'
-  import Fetch<%= name %>sUseCase from '@/usecases/<%= name.toLowerCase() %>/Fetch<%= name %>sUseCase'
+  import Fetch<%= names %>UseCase from '@/usecases/<%= name.toLowerCase() %>/Fetch<%= names %>UseCase'
   import Save<%= name %>UseCase from '@/usecases/<%= name.toLowerCase() %>/Save<%= name %>UseCase'
   import Delete<%= name %>UseCase from '@/usecases/<%= name.toLowerCase() %>/Delete<%= name %>UseCase'
 
@@ -59,7 +59,7 @@
       async fetch() {
         try {
           this.App.<%= name.toLowerCase() %>.loading = true
-          await new Fetch<%= name %>sUseCase(this.App).execute()
+          await new Fetch<%= names %>UseCase(this.App).execute()
           this.items = this.App.<%= name.toLowerCase() %>.all()
         } catch (exception: any) {
           this.$nuxt.error(exception)

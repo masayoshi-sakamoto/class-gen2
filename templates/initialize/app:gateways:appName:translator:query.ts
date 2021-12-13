@@ -26,6 +26,8 @@ export const optionsToQuery = (props?: IOptionsProps): IQueryProps => {
   const skip = page ? page - 1 : 0
   const take = itemsPerPage || 0
   return {
+    page: 0,
+    total: 1,
     skip: (skip < 0 ? 0 : skip) * take,
     take: itemsPerPage,
     sort: sortBy && sortBy[0] !== undefined ? sortBy[0] : undefined,

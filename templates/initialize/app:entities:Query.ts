@@ -1,5 +1,5 @@
 export interface IQueryProps {
-  total?: number
+  total: number
   page?: number
   skip?: number
   take?: number
