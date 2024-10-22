@@ -1,40 +1,14 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
-    "target": "es2018",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "lib": [
-      "esnext",
-      "esnext.asynciterable",
-      "dom"
-    ],
-    "suppressImplicitAnyIndexErrors": true,
-    "strictPropertyInitialization": false,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "declaration": true,
-    "sourceMap": true,
+    "allowJs": true,
     "strict": true,
-    "experimentalDecorators": true,
-    "baseUrl": ".",
-    "paths": {
-      "~/*": [
-        "./src/*"
-      ],
-      "@/*": [
-        "./src/*"
-      ]
-    },
-    "types": [
-      "@types/node"
-    ]
+    "declaration": true,
+    "target": "es5",
+    "removeComments": true,
+    "sourceMap": true,
+    "outDir": "lib"
   },
-  "include": [
-    "./src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "types": ["node"],
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }
