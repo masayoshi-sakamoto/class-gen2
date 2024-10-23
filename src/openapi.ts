@@ -45,10 +45,7 @@ export default class OpenAPIParser {
 
   private schemas(schemas: { [schema: string]: SchemaObject | ReferenceObject }): ITsSchema[] {
     return Object.entries(schemas).flatMap(([ClassName, value]) => {
-      if (!ClassName.match(/.+(Response)$/)) {
-        return this.schema(value)
-      }
-      return []
+      return this.schema(value)
     })
   }
 

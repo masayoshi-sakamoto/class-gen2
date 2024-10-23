@@ -42,6 +42,7 @@ export const app = {
   gateways: 'app/gateways/AppName',
   translator: 'app/gateways/AppName/translator',
   infrastructure: 'app/infrastructure',
+  requests: 'app/infrastructure/network/AppName/requests',
   models: 'app/infrastructure/network/AppName/schema/models',
   plugins: 'app/plugins',
   store: 'app/store',

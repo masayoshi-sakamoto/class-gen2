@@ -12,11 +12,9 @@ export default class Generator extends Base {
   /**
    * swaggerの情報からschema生成する
    */
-  async injector(name?: string) {
+  async injector() {
     this.swagger = await this.load()
-    this.swagger.models.forEach((prop) => {
-      console.log(prop)
-    })
+    await this.generate('index/app', app.root)
   }
 
   /**
@@ -27,8 +25,13 @@ export default class Generator extends Base {
     for (const model of this.swagger.models) {
       if (model.ClassName && (!name || (name && model.ClassName === upperCamel(name)))) {
         this.classname = model.ClassName
-        // await this.update('app/schemas/gateways/AppName', app.gateways)
-        await this.update('app/infrastructure', app.infrastructure)
+        await this.update(app.models, app.models)
+      }
+    }
+    for (const tag in this.swagger.paths) {
+      if (tag && (!name || (name && tag === upperCamel(name)))) {
+        this.tag = tag
+        await this.update(app.requests, app.requests)
       }
     }
   }

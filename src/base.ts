@@ -16,6 +16,7 @@ export default class Base {
   protected src: string
   protected dist: string
   protected classname: string = 'user'
+  protected tag: string = ''
   protected swagger: { paths: any; models: ITsSchema[] } = { paths: {}, models: [] }
   protected sqldump?: any
   protected configs: IConfig
@@ -171,7 +172,11 @@ export default class Base {
       className: lowerCamel(this.classname),
       classNames: lowerCamel(this.classname, true),
       ClassName: upperCamel(this.classname),
-      ClassNames: upperCamel(this.classname, true)
+      ClassNames: upperCamel(this.classname, true),
+      Tag: upperCamel(this.tag),
+      Tags: upperCamel(this.tag, true),
+      tag: snake(this.tag),
+      tags: snake(this.tag, true)
     }
   }
 
