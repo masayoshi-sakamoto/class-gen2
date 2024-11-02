@@ -48,13 +48,14 @@ export const to<%= ClassName %>Props = (props: <%= ClassName %> | null | undefin
       const camel = lowerCamel(key)
       const model = upperCamel(key)
       let src = key
+      console.log(prop)
       if (prop.array) {
         src = `${key} ? ${key}.map((prop) => to${prop.ref}Props(prop)) : []`
-      } else if (prop.ref && prop.object) {
+      } else if (prop.ref) {
         if (models.find((model) => model.ClassName === prop.ref.slice(ClassName.length))) {
           const model = prop.ref.slice(ClassName.length)
           src = `to${model}Props(${key} as ${model})`
-        } else if (models.find((model) => model.ClassName === prop.ref)) {
+        } else if (models.find((model) => model.ClassName === prop.ref) && !isCamelCase(prop.ref)) {
           src = `to${prop.ref}Props(${key})`
         }
       }
@@ -71,10 +72,10 @@ export const to<%= ClassName %>Seed = (props: I<%= ClassName %>Props): <%= Class
     <%= Object.entries(seed.schema).map(([key, prop]) => {
       let camel = lowerCamel(key)
       const src = key
-      if (prop.format === 'json') {
+      if (prop.ref) {
         camel = `JSON.stringify({ ${key} })`
       }
-      return camel === src ? src : src + ': ' + camel
+      return camel === src ? src + ': ' + src + '!'  : src + ': ' + camel
     }).join(',\n    ') %>
   }
 }

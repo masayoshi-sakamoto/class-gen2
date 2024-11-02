@@ -2,8 +2,7 @@ import * as fs from 'fs'
 import { IOptions } from './options'
 import Base from './base'
 import { app, swagger } from './types'
-import { upperCamel } from './common'
-import { isCamelCase } from './lib/snake-camel'
+import { upperCamel, isCamelCase } from './common'
 
 export default class Generator extends Base {
   constructor(protected options: IOptions) {
@@ -17,11 +16,9 @@ export default class Generator extends Base {
 
   async gateways(name?: string) {
     this.swagger = await this.load()
-    const regex = /Request|Response/
-    const camelCasePattern = /^[a-z]+([A-Z][a-z]*)*$/
     for (const model of this.swagger.models) {
       if (model.ClassName && (!name || (name && model.ClassName === upperCamel(name)))) {
-        if ((!isCamelCase(model.ClassName) && model.refs?.length) || 0 > 0) {
+        if (!isCamelCase(model.ClassName) && model.schema) {
           this.classname = model.ClassName
           await this.update(app.translator, app.translator)
         }

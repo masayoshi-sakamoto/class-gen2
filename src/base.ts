@@ -5,7 +5,7 @@ import * as ejs from 'ejs'
 import * as chalk from 'chalk'
 import * as prettier from 'prettier'
 
-import { snake, kabab, upperCamel, lowerCamel, resolve, replaces, error } from './common'
+import { snake, kabab, upperCamel, lowerCamel, resolve, replaces, error, isCamelCase } from './common'
 import { IOptions } from './options'
 import OpenAPIParser from './openapi'
 import { EmptyConfig, IConfig, swagger, app, exts, ITsSchema } from './types'
@@ -107,7 +107,8 @@ export default class Base {
       snake,
       kabab,
       upperCamel,
-      lowerCamel
+      lowerCamel,
+      isCamelCase
     }
     await this.write(dist, ejs.render(fs.readFileSync(src, 'utf-8'), opts), silent)
   }

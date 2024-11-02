@@ -55,8 +55,7 @@ export default class OpenAPIParser {
       const type = value.$ref.split('/').pop()
       return {
         type: [type],
-        ref: type,
-        object: true
+        ref: type
       }
     } else {
       let data: ITsSchema = {}
@@ -89,11 +88,11 @@ export default class OpenAPIParser {
             data.type = data.type || []
             data.type.push(schema.type[0] + '[]')
             data.required = required
-            data.ref = schema.type[0] !== 'null' ? schema.type[0] : data.ref
+            data.ref = schema.type[0] !== 'null' && schema.type[0] !== 'string' ? schema.type[0] : data.ref
             data.array = true
           } else {
             data.type = data.type || []
-            data.type.push(type as string)
+            data.type.push(types[type as string])
             data.required = required
           }
         }

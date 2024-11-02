@@ -64,3 +64,9 @@ export function lowerCamel(name: string, pluralize: boolean = false) {
   }
   return name
 }
+
+export function isCamelCase(str: string) {
+  // 文字列全体がキャメルケースであるかを確認
+  const camelCasePattern = /[a-z][A-Z]/
+  return camelCasePattern.test(str)
+}

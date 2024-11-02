@@ -11,7 +11,11 @@ import <%= ref %> from './<%= ref %>'
 export default interface <%= ClassName %> {
 <%_ if (model) { _%>
 <%_ for (const key in model.schema) { _%>
+  <%_ if ( /Request/.test(ClassName) && model.schema[key].object) { _%>
+  <%= model.schema[key].required ? key : key+'?' %>: string %>
+  <%_ } else {  _%>
   <%= model.schema[key].required ? key : key+'?' %>: <%= model.schema[key].type.join(' | ') %>
+  <%_ } _%>
 <%_ } _%>
 <%_ } _%>
 }
