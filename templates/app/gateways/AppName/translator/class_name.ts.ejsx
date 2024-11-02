@@ -49,7 +49,7 @@ export const to<%= ClassName %>Props = (props: <%= ClassName %> | null | undefin
       const model = upperCamel(key)
       let src = key
       console.log(prop)
-      if (prop.array) {
+      if (prop.array && prop.ref) {
         src = `${key} ? ${key}.map((prop) => to${prop.ref}Props(prop)) : []`
       } else if (prop.ref) {
         if (models.find((model) => model.ClassName === prop.ref.slice(ClassName.length))) {
@@ -75,7 +75,7 @@ export const to<%= ClassName %>Seed = (props: I<%= ClassName %>Props): <%= Class
       if (prop.ref) {
         camel = `JSON.stringify({ ${key} })`
       }
-      return camel === src ? src + ': ' + src + '!'  : src + ': ' + camel
+      return camel === src ? src + ': ' + src + '!'  : src + ': ' + camel + '!'
     }).join(',\n    ') %>
   }
 }
