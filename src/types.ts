@@ -39,7 +39,7 @@ export const app = {
   root: 'app',
   entities: 'app/entities',
   AppName: 'app/gateways',
-  gateways: 'app/gateways/AppName',
+  gateways: 'app/gateways',
   translator: 'app/gateways/AppName/translator',
   infrastructure: 'app/infrastructure',
   requests: 'app/infrastructure/network/AppName/requests',
@@ -130,6 +130,9 @@ export type ITsSchema = {
   schema?: { [key: string]: ITsSchema }
   required?: boolean
   refs?: string[]
+  ref?: string
+  object?: boolean
+  array?: boolean
 }
 
 export type IRef = {

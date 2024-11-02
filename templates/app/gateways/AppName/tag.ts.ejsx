@@ -1,0 +1,52 @@
+<%_ const key = Object.keys(paths).find((key) => key === Tag) _%>
+<%_ const path = key ? paths[key] : undefined _%>
+<%_ if (path) { _%>
+/* eslint camelcase: 0 */
+import { <%= AppName %>GatewayBase } from './base'
+import { to<%= Tag %>Props, to<%= Tag %>Seed } from './translator/<%= tag %>'
+<%_ Object.values(path).forEach((props) => { _%>
+  <%_ const operationId = upperCamel(props.operationId) _%>
+  <%_ const id = operationId.replace(Tag, '') _%>
+  <%_ if ( id === 'Fetch') { _%>
+import { optionsToQuery, toQueryProps } from './translator/query'
+import { toOptionsProps } from './translator/options'
+import { IOptionsProps } from '@/entities/Options'
+  <%_ } _%>
+<%_ }) _%>
+import { <%= Object.values(path).map((prop) => upperCamel(prop.operationId)).join(', ') %> } from '@/infrastructure/network/<%= AppName %>/requests/<%= tag %>'
+import { I<%= Tag %>Props } from '@/entities/<%= Tag %>'
+
+export default class <%= Tag %> extends <%= AppName %>GatewayBase {
+<%_ Object.values(path).forEach((props) => { _%>
+  <%_ const operationId = upperCamel(props.operationId) _%>
+  <%_ const id = operationId.replace(Tag, '') _%>
+  <%_ const response = Object.values(Object.values(props.responses)[0].content)[0].schema.$ref.split('/').pop() _%>
+  <%_ const responseModel = models.find((prop) => prop.ClassName === response) _%>
+  <%_ const param = Object.keys(responseModel.schema)[0]  _%>
+  <%_ const name = props.parameters && props.parameters[0].in === 'path' ? props.parameters[0].name : undefined _%>
+  <%_ const prop = name === param ? 'id' : name _%>
+
+  <%_ if ( id === 'Fetch') { _%>
+  async <%= operationId %>(options?: IOptionsProps) {
+    const response = await this.apiClient.request(new <%= operationId %>(optionsToQuery(options)))
+    return {
+      items: response.<%= param %>.map((prop) => to<%= Tag %>Props(prop)),
+      query: toQueryProps(response.query),
+      options: toOptionsProps(response.query)
+    }
+  }
+  <%_ } else if (props.requestBody) { _%>
+    <%_ const request = Object.values(props.requestBody.content)[0].schema.$ref.split('/').pop() _%>
+  async <%= operationId %>(<%= name ? prop + ': ' + props.parameters[0].schema.type + ', ' : '' %>params: I<%= Tag %>Props) {
+    const { <%= param %> } = await this.apiClient.request(new <%= operationId %>(<%= name ? prop + ', ' : '' %>to<%= Tag %>Seed(params)))
+    return to<%= Tag %>Props(<%= param %>)
+  }
+  <%_ } else  { _%>
+  async <%= operationId %>(<%= name ? prop + ': ' + props.parameters[0].schema.type : '' %>) {
+    const { <%= param %> } = await this.apiClient.request(new <%= operationId %>(<%= prop %>))
+    return to<%= Tag %>Props(<%= param %>)
+  }
+  <%_ } _%>
+<%_ }) _%>
+}
+<%_ } _%>

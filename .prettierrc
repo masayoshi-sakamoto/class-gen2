@@ -3,9 +3,15 @@
   "arrowParens": "always",
   "singleQuote": true,
   "tabWidth": 2,
-  "printWidth": 140,
+  "printWidth": 120,
   "trailingComma": "none",
   "overrides": [
+    {
+      "files": ["*.ts"],
+      "options": {
+        "printWidth": 160
+      }
+    },
     {
       "files": ["*.js"],
       "options": {

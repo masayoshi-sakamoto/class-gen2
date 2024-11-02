@@ -52,8 +52,11 @@ export default class OpenAPIParser {
   private schema(value: SchemaObject | ReferenceObject, refs: string[] = [], required: boolean = false): any {
     if (isReferenceObject(value)) {
       refs.push(value.$ref.split('/').pop()!)
+      const type = value.$ref.split('/').pop()
       return {
-        type: [value.$ref.split('/').pop()]
+        type: [type],
+        ref: type,
+        object: true
       }
     } else {
       let data: ITsSchema = {}
@@ -67,6 +70,7 @@ export default class OpenAPIParser {
           data.type = data.type || []
           data.type.push(schema.type[0])
           data.required = required
+          data.ref = schema.type[0] !== 'null' ? schema.type[0] : data.ref
         }
       } else {
         for (const type of new Array(value.type).flatMap((prop) => prop)) {
@@ -85,9 +89,11 @@ export default class OpenAPIParser {
             data.type = data.type || []
             data.type.push(schema.type[0] + '[]')
             data.required = required
+            data.ref = schema.type[0] !== 'null' ? schema.type[0] : data.ref
+            data.array = true
           } else {
             data.type = data.type || []
-            data.type.push(types[type as string])
+            data.type.push(type as string)
             data.required = required
           }
         }

@@ -1,0 +1,81 @@
+/* eslint camelcase: 0 */
+<%_
+const model = models.find((prop) => prop.ClassName === ClassName)
+const seed = models.find((prop) => prop.ClassName === ClassName + 'Request')
+const sames = model.refs.filter((prop) => prop.startsWith(ClassName))
+const refs2 = sames.map((prop) => prop.slice(ClassName.length)).filter((prop) => models.find((model) => model.ClassName === prop))
+const refs = model.refs.filter((prop) => !prop.startsWith(ClassName)).concat(refs2)
+
+const schemas = []
+if (model) {
+  schemas.push(ClassName)
+}
+if (seed) {
+  schemas.push(ClassName + 'Request')
+}
+if (refs) {
+  for (const ref of refs2) {
+      schemas.push(ref)
+  }
+}
+_%>
+<%_ if (model) { _%>
+    <%_ for (const ref of refs) { _%>
+import { to<%= upperCamel(ref) %>Props } from './<%= snake(ref) %>'
+    <%_ } _%>
+  <%_ } _%>
+<%_ if (schemas.length > 0) { _%>
+import { <%= schemas.join(', ') %> } from '@/infrastructure/network/<%= AppName %>/schema/models'
+<%_ } _%>
+<%_ if (model && seed) { _%>
+import { I<%= ClassName %>Props, Empty<%= ClassName %>PropsFactory } from '@/entities/<%= ClassName %>'
+<%_ } else if (model) { _%>
+import { I<%= ClassName %>Props, Empty<%= ClassName %>PropsFactory } from '@/entities/<%= ClassName %>'
+<%_ } else if (seed) { _%>
+import { I<%= ClassName %>Props } from '@/entities/<%= ClassName %>'
+<%_ } _%>
+<%_ if (model?.schema) { _%>
+
+export const to<%= ClassName %>Props = (props: <%= ClassName %> | null | undefined): I<%= ClassName %>Props => {
+  if (!props) {
+    return Empty<%= ClassName %>PropsFactory()
+  }
+
+  const { <%= Object.keys(model.schema).join(', ') %> } = props
+  
+  return Empty<%= ClassName %>PropsFactory({
+    <%- Object.entries(model.schema).map(([key, prop]) => {
+      const camel = lowerCamel(key)
+      const model = upperCamel(key)
+      let src = key
+      if (prop.array) {
+        src = `${key} ? ${key}.map((prop) => to${prop.ref}Props(prop)) : []`
+      } else if (prop.ref && prop.object) {
+        if (models.find((model) => model.ClassName === prop.ref.slice(ClassName.length))) {
+          const model = prop.ref.slice(ClassName.length)
+          src = `to${model}Props(${key} as ${model})`
+        } else if (models.find((model) => model.ClassName === prop.ref)) {
+          src = `to${prop.ref}Props(${key})`
+        }
+      }
+      return camel === src ? camel : camel + ': ' + src
+    }).join(',\n    ') %>
+  })
+}
+<%_ } _%>
+<%_ if (seed?.schema) { _%>
+
+export const to<%= ClassName %>Seed = (props: I<%= ClassName %>Props): <%= ClassName %>Request => {
+  const { <%= Object.keys(seed.schema).map((key) => lowerCamel(key)).join(', ') %> } = props
+  return {
+    <%= Object.entries(seed.schema).map(([key, prop]) => {
+      let camel = lowerCamel(key)
+      const src = key
+      if (prop.format === 'json') {
+        camel = `JSON.stringify({ ${key} })`
+      }
+      return camel === src ? src : src + ': ' + camel
+    }).join(',\n    ') %>
+  }
+}
+<%_ } _%>
