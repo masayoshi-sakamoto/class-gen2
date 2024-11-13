@@ -30,8 +30,8 @@ export const optionsToQuery = (props?: IOptionsProps): IQueryProps => {
     total: 1,
     skip: (skip < 0 ? 0 : skip) * take,
     take: itemsPerPage || 10,
-    sort: sortBy && sortBy[0] !== undefined ? sortBy : undefined,
-    desc: sortDesc && sortDesc[0] !== undefined ? Number(sortDesc[0]) : undefined,
+    sort: sortBy,
+    desc: sortDesc,
     word: word || undefined,
     query: query ? JSON.stringify(query) : undefined
   }

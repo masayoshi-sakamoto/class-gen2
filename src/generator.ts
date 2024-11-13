@@ -73,7 +73,7 @@ export default class Generator extends Base {
           for (const path of Object.values(paths) as any) {
             this.operationId = upperCamel(path.operationId)
             this.path = path
-            await this.update('index/' + app.usecases, app.usecases, this.operationId + 'UseCase.ts')
+            await this.update('static/' + app.usecases, app.usecases, this.operationId + 'UseCase.ts')
           }
         }
       }

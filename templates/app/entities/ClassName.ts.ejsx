@@ -1,13 +1,18 @@
 <%_ const model = models.find((prop) => prop.ClassName === ClassName) _%>
-<%_ if (model) { _%>
-import { <%= model.refs.join(', ') %> } from '@/infrastructure/network/<%= AppName %>/schema/models'
+<%_ let entities = [] _%>
+<%_ if (model?.refs.length > 0) { _%>
+import { <%= model.refs.filter((prop) => prop.startsWith(ClassName)).join(', ') %> } from '@/infrastructure/network/<%= AppName %>/schema/models'
+<%_ entities = model.refs.filter((prop) => !prop.startsWith(ClassName)) _%>
+<%_ for (const name of entities) { _%>
+import <%= upperCamel(name) %>Entity, { I<%= upperCamel(name) %>Props } from '@/entities/<%= upperCamel(name) %>'
+<%_ } _%>
 <%_ } _%>
   
 export interface I<%= ClassName %>Props {
 <%_ if (model) { _%>
   <%_ for (const [key, schema] of Object.entries(model.schema)) { _%>
     <%_ const property = schema.required && key !== 'id' ? lowerCamel(key) : lowerCamel(key) + '?' _%>
-  <%= property %>: <%= schema.type.join(' | ') %>
+  <%= property %>: <%= schema.type.map((prop) => entities.find((entity) => prop.startsWith(entity)) ? `I${prop}Props` + (schema.array ? '[]': '') : prop + (schema.array ? '[]': '')).join(' | ') %>
   <%_ } _%>
 <%_ } _%>
 }
@@ -29,8 +34,17 @@ export default class <%= ClassName %>Entity {
 <%_ if (model) { _%>
   <%_ for (const [key, schema] of Object.entries(model.schema)) { _%>
     
-  get <%= lowerCamel(key) %>(): <%= schema.type.join(' | ') %><%= !schema.required || key === 'id' ? ' | undefined' : schema.ref ? ' | undefined' : ''%> {
+  get <%= lowerCamel(key) %>(): <%= schema.type.map((prop) => entities.find((entity) => prop.startsWith(entity)) ? `${prop}Entity` + (schema.array ? '[]': '') : prop + (schema.array ? '[]': '')).join(' | ') %><%= !schema.required || key === 'id' ? ' | undefined' : schema.ref ? ' | undefined' : ''%> {
+    <%_ const name = schema.type.find((prop) => entities.find((entity) => prop.startsWith(entity))) _%>
+    <%_ if (name) { _%>
+      <%_ if (schema.array) { _%>
+    return this._props.<%= lowerCamel(key) %> ? this._props.<%= lowerCamel(key) %>.map((prop) => new <%= name %>Entity(prop)) : []
+      <%_ } else { _%>
+    return new <%= name %>Entity(this._props.<%= lowerCamel(key) %>)
+      <%_ } _%>
+    <%_ } else { _%>
     return this._props.<%= lowerCamel(key) %>
+    <%_ } _%>
   }
   <%_ } _%>
 <%_ } _%>

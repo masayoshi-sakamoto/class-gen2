@@ -1,5 +1,5 @@
 import { Context } from '@nuxt/types/app'
-<%_ const AppNames = readfiles(app.gateways).filter((path) => path.isDirectory()).map((file) => file.name) _%>
+<%_ const AppNames = readfiles(app.gateways).filter((prop) => prop.isDirectory()).map((file) => file.name) _%>
 <%_ const repositories = readfiles(app.repositories).map((file) =>file.name.split('.')[0]).filter((file) => file !== 'AppRepository') _%>
 
 // Repositories

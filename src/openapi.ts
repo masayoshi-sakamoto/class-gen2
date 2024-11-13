@@ -86,7 +86,7 @@ export default class OpenAPIParser {
           if (type === 'array' && value.items) {
             const schema = this.schema(value.items, refs)
             data.type = data.type || []
-            data.type.push(schema.type[0] + '[]')
+            data.type.push(schema.type[0])
             data.required = required
             data.ref = schema.type[0] !== 'null' && schema.type[0] !== 'string' ? schema.type[0] : data.ref
             data.array = true

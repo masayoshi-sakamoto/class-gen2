@@ -11,10 +11,11 @@ import <%= ref %> from './<%= ref %>'
 export default interface <%= ClassName %> {
 <%_ if (model) { _%>
 <%_ for (const key in model.schema) { _%>
-  <%_ if ( /Request/.test(ClassName) && model.schema[key].object) { _%>
+<%_ console.log(model.schema[key].ref) _%>
+  <%_ if ( /Request/.test(ClassName) && isCamelCase(model.schema[key].ref)) { _%>
   <%= model.schema[key].required ? key : key+'?' %>: string %>
   <%_ } else {  _%>
-  <%= model.schema[key].required ? key : key+'?' %>: <%= model.schema[key].type.join(' | ') %>
+  <%= model.schema[key].required ? key : key+'?' %>: <%= model.schema[key].type.map(prop => prop !== 'null' ? prop + (model.schema[key].array ? '[]': '') : prop ).join(' | ') %>
   <%_ } _%>
 <%_ } _%>
 <%_ } _%>
