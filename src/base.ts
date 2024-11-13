@@ -17,10 +17,12 @@ export default class Base {
   protected dist: string
   protected classname: string = 'user'
   protected tag: string = ''
+  protected operationId: string = ''
   protected swagger: { paths: any; models: ITsSchema[] } = { paths: {}, models: [] }
   protected sqldump?: any
   protected configs: IConfig
   protected type?: string
+  protected path?: any
 
   constructor(protected opts: IOptions) {
     // ネームスペースがない場合は処理を終了
@@ -102,6 +104,7 @@ export default class Base {
       type: this.type,
       readfiles: this.readfiles.bind(this),
       ...this.swagger,
+      path: this.path,
       auth: this.opts.auth,
       configs: this.configs,
       snake,
@@ -119,11 +122,12 @@ export default class Base {
   protected async write(dist: string, content: string, silent: boolean) {
     const exist = fs.existsSync(dist) // 書き出し先が存在しているか
     const ext = path.extname(dist).replace('.', '')
-
+    const filepath = await prettier.resolveConfigFile()
+    const config = filepath ? await prettier.resolveConfig(filepath) : {}
     const text = exts.includes(ext)
       ? await prettier.format(content, {
           parser: ext === 'ts' ? 'typescript' : ext,
-          ...(await prettier.resolveConfig(process.cwd()))
+          ...config
         })
       : content
 
@@ -177,7 +181,8 @@ export default class Base {
       Tag: upperCamel(this.tag),
       Tags: upperCamel(this.tag, true),
       tag: snake(this.tag),
-      tags: snake(this.tag, true)
+      tags: snake(this.tag, true),
+      OperationId: this.operationId
     }
   }
 

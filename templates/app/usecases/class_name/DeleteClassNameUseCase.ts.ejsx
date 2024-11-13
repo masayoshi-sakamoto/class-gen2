@@ -1,0 +1,22 @@
+import { IApp } from '@/types/nuxt'
+import { I<%= ClassName %>Props } from '@/entities/<%= ClassName %>'
+<%_ if (auth) { _%>
+import refresh from '@/utils/refresh'
+<%_ } _%>
+
+export default class Delete<%= ClassName %>UseCase implements BaseUseCase {
+  constructor(protected App: IApp) {}
+
+  async execute(props: I<%= ClassName %>Props) {
+    try {
+      <%_ if (auth) { _%>
+      await refresh(this.App)
+      <%_ } _%>
+      await this.App.<%= appName %>Gateway.<%= ClassName %>.Delete<%= ClassName %>(props.id!)
+      return true
+    } catch (exception: any) {
+      this.App.logService.handle(exception)
+    }
+    return false
+  }
+}

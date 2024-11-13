@@ -1,0 +1,21 @@
+import { IOptionsProps } from '@/entities/Options'
+import { IApp } from '@/types/nuxt'
+<%_ if (auth) { _%>
+import refresh from '@/utils/refresh'
+<%_ } _%>
+
+export default class Fetch<%= ClassName %>UseCase implements BaseUseCase {
+  constructor(protected App: IApp) {}
+
+  async execute(options?: IOptionsProps) {
+    try {
+      <%_ if (auth) { _%>
+      await refresh(this.App)
+      <%_ } _%>
+      return await this.App.<%= appName %>Gateway.<%= ClassName %>.Fetch<%= ClassName %>(options)
+    } catch (exception: any) {
+      this.App.logService.handle(exception)
+    }
+    return null
+  }
+}

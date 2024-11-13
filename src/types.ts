@@ -14,6 +14,9 @@ export interface IConfig {
   repositories?: {
     excludes?: string[]
   }
+  usecases?: {
+    excludes?: string[]
+  }
   menu?: {
     excludes?: string[]
   }
@@ -38,7 +41,7 @@ export const swagger = {
 export const app = {
   root: 'app',
   entities: 'app/entities',
-  AppName: 'app/gateways',
+  AppName: 'app/gateways/AppName',
   gateways: 'app/gateways',
   translator: 'app/gateways/AppName/translator',
   infrastructure: 'app/infrastructure',

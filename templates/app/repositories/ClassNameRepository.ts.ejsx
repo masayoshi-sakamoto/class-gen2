@@ -1,0 +1,120 @@
+import { NuxtCookies } from 'cookie-universal-nuxt'
+import { Store } from 'vuex'
+import { RootState } from '@/store'
+import * as types from '@/store/<%= class_name %>/types'
+import * as data from '@/store/data/types'
+import { EmptyOptionsPropsFactory, IOptionsProps } from '@/entities/Options'
+import <%= ClassName %>Entity, { I<%= ClassName %>Props } from '@/entities/<%= ClassName %>'
+import { IQueryProps } from '@/entities/Query'
+
+export default class <%= ClassName %>Repository {
+  private cookies: NuxtCookies
+  private store: Store<RootState>
+
+  constructor(cookies: NuxtCookies, store: Store<RootState>) {
+    this.cookies = cookies
+    this.store = store
+  }
+
+  get fetched(): I<%= ClassName %>Props[] {
+    return this.store.state.<%= className %>.fetched
+  }
+
+  set fetched(value: I<%= ClassName %>Props[]) {
+    this.store.commit(new types.Fetched(value))
+    this.store.commit(new types.Store(value))
+  }
+
+  get entities(): <%= ClassName %>Entity[] {
+    return Object.values(this.store.state.<%= className %>.fetched).map((prop) => new <%= ClassName %>Entity(prop))
+  }
+
+  get items() {
+    return Object.values(this.store.state.<%= className %>.byIds)
+  }
+
+  get byIds() {
+    return this.store.state.<%= className %>.byIds
+  }
+
+  set query(value: IQueryProps) {
+    this.store.commit(new types.Query(value))
+  }
+
+  get query(): IQueryProps {
+    return this.store.state.<%= className %>.query
+  }
+
+  set options(value: IOptionsProps) {
+    this.cookies.set(process.env.APP_NAME + '.<%= className %>.itemsPerPage', value.itemsPerPage, { path: '/', maxAge: 60 * 60 * 24 * 365 })
+    this.store.commit(new types.Options(value))
+  }
+
+  get options(): IOptionsProps {
+    const itemsPerPage = this.cookies.get(process.env.APP_NAME + '.<%= className %>.itemsPerPage')
+    return EmptyOptionsPropsFactory({ ...this.store.state.<%= className %>.options, itemsPerPage })
+  }
+
+  set loading(value: boolean) {
+    this.store.commit(new types.Loading(value))
+  }
+
+  get loading(): boolean {
+    return this.store.state.<%= className %>.loading
+  }
+
+  set current(value: I<%= ClassName %>Props) {
+    this.store.commit(new types.Current(value))
+  }
+
+  get current(): I<%= ClassName %>Props {
+    return this.store.state.<%= className %>.current
+  }
+
+  set reset(value: boolean) {
+    this.store.commit(new types.Reset(value))
+  }
+
+  get reset(): boolean {
+    return this.store.state.<%= className %>.reset
+  }
+
+  /**
+   * orderカラムを持っていてソート機能を使う場合はコメントアウトしてください
+   */
+  // get sortable(): <%= ClassName %>Entity[] {
+  //   return Object.values(this.store.state.<%= className %>.byIds)
+  //     .sort((a, b) => {
+  //       return a.order > b.order ? 1 : a.order < b.order ? -1 : 0
+  //     })
+  //     .map((prop: I<%= ClassName %>Props) => new <%= ClassName %>Entity(prop))
+  // }
+
+  // set sortable(value: <%= ClassName %>Entity[]) {
+  //   let i = 1
+  //   const v = value.map((entity: any) => {
+  //     return { ...entity.props, order: i++ }
+  //   })
+  //   this.store.commit(new types.Store(v))
+  //   this.store.commit(new types.Fetched(v))
+  // }
+
+  update(value: I<%= ClassName %>Props) {
+    this.store.commit(new types.Update(value))
+  }
+
+  clear() {
+    this.store.commit(new types.Clear())
+  }  
+
+  response(value: { items: I<%= ClassName %>Props[]; query: IQueryProps; options: IOptionsProps } | null | undefined) {
+    if (value) {
+      this.fetched = value.items
+      this.query = value.query
+      this.options = {
+        ...this.options,
+        ...value.options
+      }
+      this.store.commit(new data.None(this.query.total === 0))
+    }
+  }}

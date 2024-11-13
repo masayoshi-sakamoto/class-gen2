@@ -1,0 +1,39 @@
+<%_ 
+const key = Object.keys(paths).find((key) => key === ClassName)
+const path = key ? paths[key] : undefined
+const put = !!Object.values(path).find((prop) => 'Put' === upperCamel(prop.operationId).replace(ClassName, ''))
+const post = !!Object.values(path).find((prop) => 'Post' === upperCamel(prop.operationId).replace(ClassName, ''))
+_%>
+import { IApp } from '@/types/nuxt'
+import { I<%= ClassName %>Props } from '@/entities/<%= ClassName %>'
+<%_ if (auth) { _%>
+import refresh from '@/utils/refresh'
+<%_ } _%>
+
+export default class Save<%= ClassName %>UseCase implements BaseUseCase {
+  constructor(protected App: IApp) {}
+
+  async execute(props: I<%= ClassName %>Props) {
+    try {
+      this.App.data.finished = false
+      <%_ if (auth) { _%>
+      await refresh(this.App)
+      <%_ } _%>
+      <%_ if (post && put) { _%>
+      if (props.id) {
+        return await this.App.<%= appName %>Gateway.<%= ClassName %>.Put<%= ClassName %>(props.id, props)
+      } else {
+        return await this.App.<%= appName %>Gateway.<%= ClassName %>.Post<%= ClassName %>(props)
+      }
+      <%_ } else if (post) { _%>
+      return await this.App.<%= appName %>Gateway.<%= ClassName %>.Post<%= ClassName %>(props)
+      <%_ } else if (put) { _%>
+      return await this.App.<%= appName %>Gateway.<%= ClassName %>.Put<%= ClassName %>(props.id, props)
+      <%_ } _%>
+
+    } catch (exception: any) {
+      this.App.logService.handle(exception)
+    }
+    return null
+  }
+}

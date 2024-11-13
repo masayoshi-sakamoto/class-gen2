@@ -1,0 +1,25 @@
+<%_ const name = path.parameters && path.parameters[0].in === 'path' ? path.parameters[0].name : undefined _%>
+import { IApp } from '@/types/nuxt'
+<%_ if (path.requestBody) { _%>
+import { I<%= ClassName %>Props } from '@/entities/<%= ClassName %>'
+<%_ } _%>
+
+export default class <%= OperationId %>UseCase implements BaseUseCase {
+  constructor(protected App: IApp) {}
+
+<%_ if (path.requestBody) { _%>
+  <%_ const request = Object.values(path.requestBody.content)[0].schema.$ref.split('/').pop() _%>
+  async execute(<%= name ? name + ': ' + path.parameters[0].schema.type + ', ' : '' %>params: I<%= ClassName %>Props) {
+    try {
+      return await this.App.<%= appName %>Gateway.<%= ClassName %>.<%= OperationId %>(<%= name ? name +', ': '' %>params)
+<%_ } else  { _%>
+  async execute(<%= name ? name + ': ' + path.parameters[0].schema.type : '' %>) {
+    try {
+      return await this.App.<%= appName %>Gateway.<%= ClassName %>.<%= OperationId %>(<%= name %>)
+<%_ } _%>
+    } catch (exception: any) {
+      this.App.logService.handle(exception)
+    }
+    return null
+  }
+}

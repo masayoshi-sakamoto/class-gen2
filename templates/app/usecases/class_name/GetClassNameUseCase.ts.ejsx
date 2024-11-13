@@ -1,0 +1,26 @@
+<%_ const key = Object.keys(paths).find((key) => key === ClassName) _%>
+<%_ const path = key ? paths[key] : undefined _%>
+<%_ 
+const value = Object.values(path).find((prop) => 'Get' === upperCamel(prop.operationId).replace(ClassName, ''))
+const type = value.parameters[0].schema.type
+_%>
+import { IApp } from '@/types/nuxt'
+<%_ if (auth) { _%>
+import refresh from '@/utils/refresh'
+<%_ } _%>
+
+export default class Get<%= ClassName %>UseCase implements BaseUseCase {
+  constructor(protected App: IApp) {}
+
+  async execute(id: <%= type %>) {
+    try {
+      <%_ if (auth) { _%>
+      await refresh(this.App)
+      <%_ } _%>
+      return await this.App.<%= appName %>Gateway.<%= ClassName %>.Get<%= ClassName %>(id)
+    } catch (exception: any) {
+      this.App.logService.handle(exception)
+    }
+    return null
+  }
+}

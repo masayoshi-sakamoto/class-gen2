@@ -48,7 +48,6 @@ export const to<%= ClassName %>Props = (props: <%= ClassName %> | null | undefin
       const camel = lowerCamel(key)
       const model = upperCamel(key)
       let src = key
-      console.log(prop)
       if (prop.array && prop.ref) {
         src = `${key} ? ${key}.map((prop) => to${prop.ref}Props(prop)) : []`
       } else if (prop.ref) {
