@@ -66,9 +66,6 @@ export const to<%= ClassName %>Seed = (props: I<%= ClassName %>Props): <%= Class
     <%= Object.entries(seed.schema).map(([key, prop]) => {
       let camel = lowerCamel(key)
       const src = key
-      if (prop.ref) {
-        camel = `JSON.stringify({ ${key} })`
-      }
       return camel === src ? src + ': ' + src + '!'  : src + ': ' + camel + '!'
     }).join(',\n    ') %>
   }

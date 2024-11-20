@@ -14,6 +14,20 @@ export default class Generator extends Base {
     await this.generate('index/app', app.root)
   }
 
+  async schema(name?: string) {
+    this.swagger = await this.load()
+    for (const model of this.swagger.models) {
+      if (model.ClassName && (!name || (name && model.ClassName === upperCamel(name)))) {
+        this.classname = model.ClassName
+        await this.update(app.models, app.models)
+        if (!isCamelCase(model.ClassName) && model.schema) {
+          await this.update(app.translator, app.translator)
+        }
+      }
+    }
+    this.injector()
+  }
+
   async gateways(name?: string) {
     this.swagger = await this.load()
     for (const model of this.swagger.models) {
@@ -35,12 +49,6 @@ export default class Generator extends Base {
 
   async infrastructure(name?: string) {
     this.swagger = await this.load()
-    for (const model of this.swagger.models) {
-      if (model.ClassName && (!name || (name && model.ClassName === upperCamel(name)))) {
-        this.classname = model.ClassName
-        await this.update(app.models, app.models)
-      }
-    }
     for (const tag in this.swagger.paths) {
       if (tag && (!name || (name && tag === upperCamel(name)))) {
         this.tag = tag
@@ -73,7 +81,7 @@ export default class Generator extends Base {
           for (const path of Object.values(paths) as any) {
             this.operationId = upperCamel(path.operationId)
             this.path = path
-            await this.update('static/' + app.usecases, app.usecases, this.operationId + 'UseCase.ts')
+            await this.update('onetime/' + app.usecases, app.usecases, this.operationId + 'UseCase.ts')
           }
         }
       }
@@ -107,5 +115,9 @@ export default class Generator extends Base {
       }
     }
     this.injector()
+  }
+
+  async static() {
+    await this.update(app.root, app.root)
   }
 }
