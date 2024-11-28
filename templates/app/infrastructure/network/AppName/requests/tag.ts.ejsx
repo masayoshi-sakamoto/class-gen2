@@ -4,9 +4,6 @@ import { HTTPMethod } from '@/infrastructure/network/types'
 <%_ const key = Object.keys(paths).find((key) => key === Tag) _%>
 <%_ let path = key ? paths[key] : undefined _%>
 <%_ if (path) { _%>
-  <%_ if (Object.values(path).find((prop) => upperCamel(prop.operationId).replace(Tag, '') === 'Fetch')) { _%>
-import { IQueryProps } from '@/entities/Query'
-  <%_ } _%>
 <%_ Object.values(path).forEach((prop) => { _%>
 <%_ const operationId = upperCamel(prop.operationId) _%>
 <%_ const response = Object.values(Object.values(prop.responses)[0].content)[0].schema.$ref.split('/').pop() _%>
@@ -24,8 +21,8 @@ export class <%= operationId %> implements APIRequest<<%= AppName %>.<%= respons
   <%_ const id = operationId.replace(Tag, '') _%>
   <%_ const name =  prop.parameters && prop.parameters[0].in === 'path' ? prop.parameters[0].name : undefined _%>
   <%_ if ( id === 'Fetch') { _%>
-  params?: IQueryProps
-  constructor(query?: IQueryProps) {
+  params?: Monitaro.Query
+  constructor(query?: Monitaro.Query) {
     this.params = query
   <%_ } else if (prop.requestBody) { _%>
   <%_ const request = Object.values(prop.requestBody.content)[0].schema.$ref.split('/').pop() _%>

@@ -1,4 +1,4 @@
-import { IOptionsProps } from '@/entities/Options'
+import { IQueryProps } from '@/entities/Query'
 import { IApp } from '@/types/nuxt'
 <%_ if (auth) { _%>
 import refresh from '@/utils/refresh'
@@ -7,12 +7,12 @@ import refresh from '@/utils/refresh'
 export default class Fetch<%= ClassName %>UseCase implements BaseUseCase {
   constructor(protected App: IApp) {}
 
-  async execute(options?: IOptionsProps) {
+  async execute(query?: IQueryProps) {
     try {
       <%_ if (auth) { _%>
       await refresh(this.App)
       <%_ } _%>
-      return await this.App.<%= appName %>Gateway.<%= ClassName %>.Fetch<%= ClassName %>(options)
+      return await this.App.<%= appName %>Gateway.<%= ClassName %>.Fetch<%= ClassName %>(query)
     } catch (exception: any) {
       this.App.logService.handle(exception)
     }

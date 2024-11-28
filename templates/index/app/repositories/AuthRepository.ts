@@ -1,7 +1,6 @@
 import { NuxtCookies } from 'cookie-universal-nuxt'
 import { Store } from 'vuex'
 import { RootState } from '@/store'
-import * as types from '@/store/auth/types'
 import { EmptyAuthPropsFactory, IAuthProps } from '@/entities/Auth'
 
 export default class AppRepository {
@@ -18,52 +17,35 @@ export default class AppRepository {
   }
 
   set auth(value: IAuthProps | null) {
-    const options = { path: '/', maxAge: 60 * 60 * 24 * 14 } // 2週間
-    const remove = { path: '/', maxAge: 1 }
-
     if (value) {
-      this.store.commit(new types.Token(value.accessToken))
-      this.store.commit(new types.Type(value.tokenType))
-      this.store.commit(new types.Expired(value.expired))
-      this.cookies.set(process.env.APP_NAME + '_accessToken', value.accessToken, options)
-      this.cookies.set(process.env.APP_NAME + '_tokenType', value.tokenType, options)
-      this.cookies.set(process.env.APP_NAME + '_expired', value.expired, options)
+      // トークンの利用可能時間を保存
+      const date = new Date().getTime() + 1000 * 60 * Number(value.expired)
+      this.cookies.set(process.env.APP_NAME + '_accessToken', value.accessToken, {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 14
+      }) // 2週間
+      this.cookies.set(process.env.APP_NAME + '_tokenType', value.tokenType, { path: '/', maxAge: 60 * 60 * 24 * 14 }) // 2週間
+      this.cookies.set(process.env.APP_NAME + '_expired', date, { path: '/', maxAge: 60 * 60 * 24 * 14 }) // 2週間
     } else {
-      this.store.commit(new types.Token(null))
-      this.store.commit(new types.Type(null))
-      this.store.commit(new types.Expired(null))
-      this.cookies.remove(process.env.APP_NAME + '_accessToken', remove)
-      this.cookies.remove(process.env.APP_NAME + '_tokenType', remove)
-      this.cookies.remove(process.env.APP_NAME + '_expired', remove)
+      this.cookies.remove(process.env.APP_NAME + '_accessToken', { path: '/', maxAge: 1 })
+      this.cookies.remove(process.env.APP_NAME + '_tokenType', { path: '/', maxAge: 1 })
+      this.cookies.remove(process.env.APP_NAME + '_expired', { path: '/', maxAge: 1 })
     }
   }
 
   get auth(): IAuthProps | null {
     return EmptyAuthPropsFactory({
-      accessToken: this.store.state.auth.accessToken || this.cookies.get(process.env.APP_NAME + '_accessToken'),
-      tokenType: this.store.state.auth.tokenType || this.cookies.get(process.env.APP_NAME + '_tokenType'),
-      expired: this.store.state.auth.expired || this.cookies.get(process.env.APP_NAME + '_expired')
+      accessToken: this.cookies.get(process.env.APP_NAME + '_accessToken'),
+      tokenType: this.cookies.get(process.env.APP_NAME + '_tokenType'),
+      expired: this.cookies.get(process.env.APP_NAME + '_expired')
     })
   }
 
-  // サーバーサイドでCookieが保存できないのでストアに保存した内容をあらためてCookieに保存し直すためのインターフェイス
-  get data(): IAuthProps | null {
-    return EmptyAuthPropsFactory({
-      accessToken: this.store.state.auth.accessToken || this.cookies.get(process.env.APP_NAME + '_accessToken'),
-      tokenType: this.store.state.auth.tokenType || this.cookies.get(process.env.APP_NAME + '_tokenType'),
-      expired: this.store.state.auth.expired || this.cookies.get(process.env.APP_NAME + '_expired')
-    })
-  }
-
-  get token(): string | null {
-    return this.store.state.auth.accessToken || this.cookies.get(process.env.APP_NAME + '_accessToken')
-  }
-
-  get type(): string | null {
-    return this.store.state.auth.tokenType || this.cookies.get(process.env.APP_NAME + '_tokenType')
+  get token(): string {
+    return this.cookies.get(process.env.APP_NAME + '_accessToken')
   }
 
   get expired(): number {
-    return Number(this.store.state.auth.expired || this.cookies.get(process.env.APP_NAME + '_expired'))
+    return Number(this.cookies.get(process.env.APP_NAME + '_expired'))
   }
 }

@@ -17,8 +17,6 @@ import { <%= r.value %> } from './translator/<%= lowerCamel(r.ref) %>'
   <%_ const operationId = upperCamel(props.operationId) _%>
   <%_ const id = operationId.replace(Tag, '') _%>
   <%_ if ( id === 'Fetch') { _%>
-import { optionsToQuery, toQueryProps } from './translator/query'
-import { toOptionsProps } from './translator/options'
 <%_ Object.values(path).forEach((props) => { _%>
   <%_ const operationId = upperCamel(props.operationId) _%>
   <%_ const id = operationId.replace(Tag, '') _%>
@@ -26,8 +24,10 @@ import { toOptionsProps } from './translator/options'
   import { toOrderRequest } from './translator/order'
   import { OrderOrdersRequest } from '@/infrastructure/network/Monitaro/schema/models'
   <%_ } _%>
+  import { EmptyResponsePropsFactory } from '@/entities/Response'
 <%_ }) _%>
-import { IOptionsProps } from '@/entities/Options'
+import { toQuery, toQueryProps } from './translator/query'
+import { IQueryProps } from '@/entities/Query'
   <%_ } _%>
 <%_ }) _%>
 import { <%= Object.values(path).map((prop) => upperCamel(prop.operationId)).join(', ') %> } from '@/infrastructure/network/<%= AppName %>/requests/<%= tag %>'
@@ -47,13 +47,12 @@ export default class <%= Tag %> extends <%= AppName %>GatewayBase {
   <%_ const prop = name === param ? 'id' : name _%>
 
   <%_ if ( id === 'Fetch') { _%>
-  async <%= operationId %>(options?: IOptionsProps) {
-    const response = await this.apiClient.request(new <%= operationId %>(optionsToQuery(options)))
-    return {
+  async <%= operationId %>(query?: IQueryProps) {
+    const response = await this.apiClient.request(new <%= operationId %>(query))
+    return EmptyResponsePropsFactory({
       items: response.<%= param %>.map((prop) => to<%= Tag %>Props(prop)),
       query: toQueryProps(response.query),
-      options: toOptionsProps(response.query)
-    }
+    })
   }
   <%_ } else if ( id === 'Order') { _%>
   async <%= operationId %>(<%= name ? prop + ': ' + props.parameters[0].schema.type + ', ' : '' %>params: I<%= Tag %>Props[]) {

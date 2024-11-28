@@ -1,6 +1,6 @@
 import { MutationTree } from 'vuex'
 import { I<%= ClassName %>State, state as init } from '@/store/<%= class_name %>'
-import { Types, Store, Fetched, Update, Query, Options, Loading, Current, Reset } from '@/store/<%= class_name %>/types'
+import { Types, Store, Fetched, Update, Query, Loading, Current, Reset } from '@/store/<%= class_name %>/types'
 
 const mutations: MutationTree<I<%= ClassName %>State> = {
   [Types.store]: (state, action: Store) => {
@@ -23,9 +23,6 @@ const mutations: MutationTree<I<%= ClassName %>State> = {
   },
   [Types.query]: (state, action: Query) => {
     state.query = action.payload
-  },
-  [Types.options]: (state, action: Options) => {
-    state.options = action.payload
   },
   [Types.loading]: (state, action: Loading) => {
     state.loading = action.payload

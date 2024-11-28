@@ -9,6 +9,19 @@ export default class Generator extends Base {
     super(options)
   }
 
+  async index() {
+    this.injector()
+  }
+
+  async all() {
+    this.schema()
+    this.entities()
+    this.infrastructure()
+    this.gateways()
+    this.usecases()
+    this.repositories()
+  }
+
   async injector() {
     this.swagger = await this.load()
     await this.generate('index/app', app.root)
@@ -22,6 +35,19 @@ export default class Generator extends Base {
         await this.update(app.models, app.models)
         if (!isCamelCase(model.ClassName) && model.schema) {
           await this.update(app.translator, app.translator)
+        }
+      }
+    }
+    this.injector()
+  }
+
+  async entities(name?: string) {
+    this.swagger = await this.load()
+    for (const model of this.swagger.models) {
+      if (model.ClassName && (!name || (name && model.ClassName === upperCamel(name)))) {
+        if (!isCamelCase(model.ClassName) && model.schema) {
+          this.classname = model.ClassName
+          await this.update(app.entities, app.entities)
         }
       }
     }
@@ -53,19 +79,6 @@ export default class Generator extends Base {
       if (tag && (!name || (name && tag === upperCamel(name)))) {
         this.tag = tag
         await this.update(app.requests, app.requests)
-      }
-    }
-    this.injector()
-  }
-
-  async entities(name?: string) {
-    this.swagger = await this.load()
-    for (const model of this.swagger.models) {
-      if (model.ClassName && (!name || (name && model.ClassName === upperCamel(name)))) {
-        if (!isCamelCase(model.ClassName) && model.schema) {
-          this.classname = model.ClassName
-          await this.update(app.entities, app.entities)
-        }
       }
     }
     this.injector()

@@ -1,6 +1,5 @@
 /* eslint camelcase: 0 */
 <%_
-console.log(models)
 const model = models.find((prop) => prop.ClassName === ClassName)
 const seeds = models.filter((prop) => prop.ClassName.endsWith(ClassName + 'Request'))
 const sames = model.refs.filter((prop) => prop.startsWith(ClassName))
