@@ -12,7 +12,7 @@ try {
   program
     .version(pkg.version)
     .option('--namespace <namespace>', 'application namespace', 'example')
-    .option('--config <filename>', 'application config file name', 'class-gen.json')
+    .option('--config <filename>', 'application config file name', 'classgen-ts-nuxt.json')
     .option('--json <filename>', 'swagger.yaml directory')
     .option('--dist <path>', 'output directory', './')
     .option('-f, --force', 'forced command')

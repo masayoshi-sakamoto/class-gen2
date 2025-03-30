@@ -1,24 +1,16 @@
-import { Empty<%= ClassName %>PropsFactory, I<%= ClassName %>Props } from '@/entities/<%= ClassName %>'
-import { EmptyQueryPropsFactory, IQueryProps } from '@/entities/Query'
+import { I<%= ClassName %>Props } from '@/entities/<%= ClassName %>'
+import { EmptyResponsePropsFactory, IResponseProps } from '@/entities/Response'
 
 export interface I<%= ClassName %>State {
-  byIds: {
-    [id: string]: I<%= ClassName %>Props
-  }
-  fetched: I<%= ClassName %>Props[]
-  query: IQueryProps
-  loading: boolean
-  current: I<%= ClassName %>Props
-  reset: boolean
+  response: IResponseProps<I<%= ClassName %>Props>
+  current: I<%= ClassName %>Props | null
+  filter: string
 }
 
 export const state = (): I<%= ClassName %>State => ({
-  byIds: {},
-  fetched: [],
-  query: EmptyQueryPropsFactory(),
-  loading: false,
-  current: Empty<%= ClassName %>PropsFactory(),
-  reset: true
+  response: EmptyResponsePropsFactory(),
+  current: null,
+  filter: 'all'
 })
 
 export default state

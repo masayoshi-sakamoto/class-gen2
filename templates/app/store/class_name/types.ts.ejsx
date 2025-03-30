@@ -1,55 +1,25 @@
+import { IResponseProps } from '@/entities/Response'
 import { I<%= ClassName %>Props } from '@/entities/<%= ClassName %>'
-import { IQueryProps } from '@/entities/Query'
 
 export const Types = {
   store: 'store',
-  fetched: 'fetched',
-  udpate: 'udpate',
-  query: 'query',
-  loading: 'loading',
   current: 'current',
-  reset: 'reset',
-  clear: 'clear'
+  filter: 'filter'
 }
 
 export const path = '<%= class_name %>/'
 
-export class Store implements FluxStandardAction<I<%= ClassName %>Props[]> {
+export class Store implements FluxStandardAction<IResponseProps<I<%= ClassName %>Props>> {
   type = path + Types.store
-  constructor(public payload: I<%= ClassName %>Props[]) {}
+  constructor(public payload: IResponseProps<I<%= ClassName %>Props>) {}
 }
 
-export class Fetched implements FluxStandardAction<I<%= ClassName %>Props[]> {
-  type = path + Types.fetched
-  constructor(public payload: I<%= ClassName %>Props[]) {}
-}
-
-export class Update implements FluxStandardAction<I<%= ClassName %>Props> {
-  type = path + Types.udpate
-  constructor(public payload: I<%= ClassName %>Props) {}
-}
-
-export class Query implements FluxStandardAction<IQueryProps> {
-  type = path + Types.query
-  constructor(public payload: IQueryProps) {}
-}
-
-export class Loading implements FluxStandardAction<boolean> {
-  type = path + Types.loading
-  constructor(public payload: boolean) {}
-}
-
-export class Current implements FluxStandardAction<I<%= ClassName %>Props> {
+export class Current implements FluxStandardAction<I<%= ClassName %>Props | null> {
   type = path + Types.current
-  constructor(public payload: I<%= ClassName %>Props) {}
+  constructor(public payload: I<%= ClassName %>Props | null) {}
 }
 
-export class Reset implements FluxStandardAction<boolean> {
-  type = path + Types.reset
-  constructor(public payload: boolean) {}
-}
-
-export class Clear implements FluxStandardAction<void> {
-  type = path + Types.clear
-  constructor() {}
+export class Filter implements FluxStandardAction<string> {
+  type = path + Types.filter
+  constructor(public payload: string) {}
 }

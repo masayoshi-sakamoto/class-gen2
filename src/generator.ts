@@ -31,10 +31,12 @@ export default class Generator extends Base {
     this.swagger = await this.load()
     for (const model of this.swagger.models) {
       if (model.ClassName && (!name || (name && model.ClassName === upperCamel(name)))) {
-        this.classname = model.ClassName
-        await this.update(app.models, app.models)
-        if (!isCamelCase(model.ClassName) && model.schema) {
-          await this.update(app.translator, app.translator)
+        if (!this.configs.schemas?.excludes?.includes(model.ClassName)) {
+          this.classname = model.ClassName
+          await this.update(app.models, app.models)
+          if (!isCamelCase(model.ClassName) && model.schema) {
+            await this.update(app.translator, app.translator)
+          }
         }
       }
     }

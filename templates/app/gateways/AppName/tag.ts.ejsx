@@ -4,10 +4,10 @@
 /* eslint camelcase: 0 */
 import { <%= AppName %>GatewayBase } from './base'
 <%_ const refs = Object.values(path).flatMap((props) => { _%>
-  <%_ const response = Object.values(Object.values(props.responses)[0].content)[0].schema.$ref.split('/').pop() _%>
+  <%_ const response = Object.values(Object.values(props.responses)[0].content)[0].schema.$ref?.split('/').pop() || '' _%>
   <%_ const responseModel = models.find((prop) => prop.ClassName === response) _%>
-  <%_ const ref = Object.values(responseModel.schema)[0].ref _%>
-  <%_ const request = props.requestBody ? Object.values(props.requestBody.content)[0].schema.$ref.split('/').pop() : '' _%>
+  <%_ const ref = responseModel ? Object.values(responseModel.schema)[0].ref : '' _%>
+  <%_ const request = props.requestBody && Object.values(props.requestBody.content)[0].schema.$ref ? Object.values(props.requestBody.content)[0].schema.$ref.split('/').pop() : '' _%>
   <%_ return ref ? {ref, value: (props.requestBody ? `to${request}` : `to${ref}Props`)} : [] _%>
 <%_ }).filter((item, index, self) => index === self.findIndex((t) => t.ref === item.ref && t.value === item.value)) _%>
 <%_ for (const r of refs) { _%>
@@ -39,16 +39,16 @@ export default class <%= Tag %> extends <%= AppName %>GatewayBase {
 <%_ Object.values(path).forEach((props) => { _%>
   <%_ const operationId = upperCamel(props.operationId) _%>
   <%_ const id = operationId.replace(Tag, '') _%>
-  <%_ const response = Object.values(Object.values(props.responses)[0].content)[0].schema.$ref.split('/').pop() _%>
+  <%_ const response = Object.values(Object.values(props.responses)[0].content)[0].schema.$ref?.split('/').pop() || '' _%>
   <%_ const responseModel = models.find((prop) => prop.ClassName === response) _%>
-  <%_ const param = Object.keys(responseModel.schema)[0]  _%>
-  <%_ const ref = Object.values(responseModel.schema)[0].ref _%>
+  <%_ const param = responseModel ? Object.keys(responseModel.schema)[0] : ''  _%>
+  <%_ const ref = responseModel ? Object.values(responseModel.schema)[0].ref : '' _%>
   <%_ const name = props.parameters && props.parameters[0].in === 'path' ? props.parameters[0].name : undefined _%>
   <%_ const prop = name === param ? 'id' : name _%>
 
   <%_ if ( id === 'Fetch') { _%>
   async <%= operationId %>(query?: IQueryProps) {
-    const response = await this.apiClient.request(new <%= operationId %>(query))
+    const response = await this.apiClient.request(new <%= operationId %>(toQuery(query)))
     return EmptyResponsePropsFactory({
       items: response.<%= param %>.map((prop) => to<%= Tag %>Props(prop)),
       query: toQueryProps(response.query),
@@ -61,7 +61,7 @@ export default class <%= Tag %> extends <%= AppName %>GatewayBase {
     return <%= param %>.map((prop) => to<%= Tag %>Props(prop))
   }
   <%_ } else if (props.requestBody) { _%>
-    <%_ const request = Object.values(props.requestBody.content)[0].schema.$ref.split('/').pop() _%>
+    <%_ const request = props.requestBody && Object.values(props.requestBody.content)[0].schema.$ref ? Object.values(props.requestBody.content)[0].schema.$ref.split('/').pop() : '' _%>
   async <%= operationId %>(<%= name ? prop + ': ' + props.parameters[0].schema.type + ', ' : '' %>params: I<%= Tag %>Props) {
     const { <%= param %> } = await this.apiClient.request(new <%= operationId %>(<%= name ? prop + ', ' : '' %>to<%= Tag %>Request(params)))
     <%_ if (ref) { _%>

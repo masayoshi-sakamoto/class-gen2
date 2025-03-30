@@ -6,7 +6,7 @@ import { HTTPMethod } from '@/infrastructure/network/types'
 <%_ if (path) { _%>
 <%_ Object.values(path).forEach((prop) => { _%>
 <%_ const operationId = upperCamel(prop.operationId) _%>
-<%_ const response = Object.values(Object.values(prop.responses)[0].content)[0].schema.$ref.split('/').pop() _%>
+<%_ const response = Object.values(Object.values(prop.responses)[0].content)[0].schema.$ref?.split('/').pop() || '' _%>
 
 /**
  * <%= prop.summary %>

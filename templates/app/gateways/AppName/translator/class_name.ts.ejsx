@@ -46,7 +46,7 @@ export const to<%= ClassName %>Props = (props: <%= ClassName %> | null | undefin
       const model = upperCamel(key)
       let src = key
       if (prop.array && prop.ref && !prop.ref.startsWith(ClassName)) {
-        src = `${key} ? ${key}.map((prop) => to${prop.ref}Props(prop)) : []`
+        src = `${key}?.map(to${prop.ref}Props)`
       } else if (prop.ref && !prop.ref.startsWith(ClassName)) {
         if (models.find((model) => model.ClassName === prop.ref.slice(ClassName.length))) {
           const model = prop.ref.slice(ClassName.length)
