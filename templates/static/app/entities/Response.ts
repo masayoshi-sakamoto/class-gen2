@@ -72,3 +72,12 @@ export const ResponsePropsByIdsFactory = <P>(value: IResponseProps<P>, props: IR
     last
   }
 }
+export const SetResponsePropsByIds = <P>(value: IResponseProps<P>, current: any): IResponseProps<P> => {
+  const byIds = { ...value.byIds, [current.id]: current }
+  const items: P[] = Object.values(byIds)
+  return {
+    ...value,
+    byIds,
+    items
+  }
+}
